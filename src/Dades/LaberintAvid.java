@@ -19,7 +19,7 @@ public class LaberintAvid {
         posAuxF=posF;
         posAuxC=posC;
         valorsAux=new String[files][columnes];
-        //this.valors=valors;
+
     }
     
     public String toString() {
