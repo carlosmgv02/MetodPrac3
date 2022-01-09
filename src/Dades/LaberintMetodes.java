@@ -1,10 +1,10 @@
 package Dades;
 
-public class LaberintAvid {
+public class LaberintMetodes {
     int files, columnes, casellaSF, casellaSC, casellaAF, casellaAC, posF, posC, posAuxF, posAuxC, posActF, posActC;
     String[][] valors = null, valorsAux;
     
-    public LaberintAvid (int files, int columnes, int casellaSF, int casellaSC, int casellaAF, int casellaAC) {
+    public LaberintMetodes (int files, int columnes, int casellaSF, int casellaSC, int casellaAF, int casellaAC) {
         valors=new String[files][columnes];
         this.files=files;
         this.columnes=columnes;
@@ -144,14 +144,14 @@ public class LaberintAvid {
         return valorActual;
     }
     
-    public int millorCas (int valorActual) {
+    public int millorCasAvid (int valorActual) {
         int mov=0, Faux=0, Caux=0, valorAux=0, valorAux2=0;
         String oper;
         boolean movValid=true;
         while(mov<4) {
             oper=moviment(mov);
             movValid=movValid();
-            if(movValid&&!valorsAux[posF][posC].equalsIgnoreCase("N")) {
+            if(movValid&&!valorsAux[posF][posC].contains("N")) {
                 valorAux=operacio(valorActual);
                 if(mov==0) {
                     valorAux2=valorAux;

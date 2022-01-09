@@ -4,10 +4,10 @@ import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import Dades.LaberintAvid;
+import Dades.LaberintMetodes;
 public class AplicacioAvid {
     
-    static LaberintAvid l;
+    static LaberintMetodes l;
     static int  casellaF, casellaC, mov, valorAct=9;
     static String casella=new String();
     static boolean fi=false, movV=true;
@@ -17,7 +17,7 @@ public class AplicacioAvid {
         l=carregaLaberint("Laberint.txt");
         System.out.println(l);
         while(!fi) {
-                valorAct=l.millorCas(valorAct);
+                valorAct=l.millorCasAvid(valorAct);
                 casellaF=l.actualitzacioF();
                 casellaC=l.actualitzacioC();
                 System.out.println("fila: "+casellaF+"columna:"+casellaC);
@@ -30,7 +30,7 @@ public class AplicacioAvid {
             System.out.println("has perdut");
     }
     
-    private static LaberintAvid carregaLaberint(String nomFitxer) throws FileNotFoundException {
+    private static LaberintMetodes carregaLaberint(String nomFitxer) throws FileNotFoundException {
         Scanner entrada = new Scanner(new File(nomFitxer));
         
         
@@ -70,7 +70,7 @@ public class AplicacioAvid {
             entrada.close();
             System.out.println(e);
         }
-        LaberintAvid lab = new LaberintAvid(files, columnes, casellaAF, casellaAC, casellaSF, casellaSC);
+        LaberintMetodes lab = new LaberintMetodes(files, columnes, casellaAF, casellaAC, casellaSF, casellaSC);
         lab.afegirLab(valors);        
         return lab;
     }
