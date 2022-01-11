@@ -119,8 +119,8 @@ public class LaberintMetodes {
     }
     
     public int operacio(int valorActual) {
-        int operand;
-        String num;
+        int operand=0;
+        String num="";
         if(valors[posF][posC].contains("+")) {
             num=valors[posF][posC].replace("+", "");
             operand=Integer.parseInt(num);
@@ -180,4 +180,31 @@ public class LaberintMetodes {
         else
             return false;
     }
+    
+	public void funcioBackT (int valorRestant, String[] pasos, int nivell) {
+		
+		if(finalJoc(valorRestant)&&valorRestant>0) {
+			System.out.println("Els pasos son: "+printaPasos(pasos));
+			return;
+		}
+		//S'ha de tindre en compte que per pujar es necesita tambe decrementar les files i columnes
+		//pero poder recorrer tot el laberint i tindre totes les opcions possibles
+		for(int i = posAuxF; i<files; i++)
+			for(int j = posAuxC; j<columnes && nivell>=0; j++) {
+				if(!valors[i][j].contains("N")||valorRestant<=0) {
+				pasos[nivell] = valors[i][j];
+				posF=i;
+				posC=j;
+				valorRestant=operacio(valorRestant);
+				funcioBackT(valorRestant, pasos, --nivell);
+				}else {
+				++nivell;
+				pasos[nivell] = "";}
+			}
+	}
+	public String printaPasos (String[] pasos ) {	
+		String resultat = "";	
+		for (int i = pasos.length - 1; i > 0; i--) resultat += pasos[i] + " ";	
+		return resultat;	
+	}
 }
