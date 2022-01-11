@@ -118,26 +118,26 @@ public class LaberintMetodes {
         return posC;
     }
     
-    public int operacio(int valorActual) {
+    public int operacio(int valorActual, int i, int j) {
         int operand=0;
         String num="";
-        if(valors[posF][posC].contains("+")) {
-            num=valors[posF][posC].replace("+", "");
+        if(valors[i][j].contains("+")) {
+            num=valors[i][j].replace("+", "");
             operand=Integer.parseInt(num);
             valorActual=valorActual+operand;
         }else
-        if(valors[posF][posC].contains("-")) {
-            num=valors[posF][posC].replace("-", "");
+        if(valors[i][j].contains("-")) {
+            num=valors[i][j].replace("-", "");
             operand=Integer.parseInt(num);
             valorActual=valorActual-operand;
         }else
-            if(valors[posF][posC].contains("*")) {
-                num=valors[posF][posC].replace("*", "");
+            if(valors[i][j].contains("*")) {
+                num=valors[i][j].replace("*", "");
                 operand=Integer.parseInt(num);
                 valorActual=valorActual*operand;
             }else
-                if(valors[posF][posC].contains("/")) {
-                    num=valors[posF][posC].replace("/", "");
+                if(valors[i][j].contains("/")) {
+                    num=valors[i][j].replace("/", "");
                     operand=Integer.parseInt(num);
                     valorActual=valorActual/operand;
                 }
@@ -151,7 +151,11 @@ public class LaberintMetodes {
         while(mov<4) {
             oper=moviment(mov);
             movValid=movValid();
+            if(valorsAux[posF][posC].contains("N")&&mov!=0) {
+            	restaurarPos(mov);
+            }
             if(movValid&&!valorsAux[posF][posC].contains("N")) {
+            	valorsAux[3][0]="N";
                 valorAux=operacio(valorActual);
                 if(mov==0) {
                     valorAux2=valorAux;
@@ -180,28 +184,113 @@ public class LaberintMetodes {
         else
             return false;
     }
-    
-	public void funcioBackT (int valorRestant, String[] pasos, int nivell) {
+    public void comprobar(int valorRestant){
+        //cori: 0=norte, 1=sur, 2=oeste, 3=este
+       	int moves=4,i=0,j=0, max=0;
+       	int cori=0;
+  		int mov=0;
+  		int valorRestantAux;
+  		
+  		while(mov<moves){
+              switch(mov){
+                  case 0:
+                  if(usable(i-1,j)){
+                	valorRestantAux=valorRestant;
+                	max=operacio(valorRestantAux, i-1, j);
+                	
+                  	//max=valors[i][j]+valors[i-1][j];
+                  	cori=0;
+                  }
+                  	
+                 
+                  break;
+                  case 1:
+                	  valorRestantAux=valorRestant;
+                  if(usable(i+1,j)&&operacio(valorRestantAux, i+1, j)>=max){
+                	 
+                  	  max=operacio(valorRestantAux, i+1, j);
+                      //max=valors[i][j]+valors[i-1][j];
+                      cori=1;
+                  }
+                  break;
+                  case 2:
+                	  valorRestantAux=valorRestant;
+                  if(usable(i,j-1)&&operacio(valorRestantAux, i, j-1)>=max){
+                	
+                  	  max=operacio(valorRestantAux, i, j-1);
+                      //max=Integer.parseInt(valors[i][j])+Integer.parseInt(valors[i][j-1]);
+                      cori=2;
+                  }
+                  break;
+                  case 3:
+                	  valorRestantAux=valorRestant;
+                  if(usable(i,j+1)&&operacio(valorRestantAux, i, j+1)>=max){
+                	  
+                  	  max=operacio(valorRestantAux, i, j+1);
+                      //max=Integer.parseInt(valors[i][j])+Integer.parseInt(valors[i][j+1]);
+                      cori=3;
+                  }
+                  break;
+              }
+              
+              mov++;
+          }
+          switch(cori){
+             case 0:
+             i--;
+             posF=i;
+             break;
+             case 1:
+             i++;
+             posF=i;
+             break;
+             case 2:
+             j--;
+             posC=j;
+             break;
+             case 3:
+             j++;
+             posC=j;
+             break;
+          }
+       	
+            
+        
+    }
+    public boolean usable(int i,int j){
+        if(!valors[i][j].equalsIgnoreCase("NA"))
+        	return true;
+        
+        return false;
+    }
 		
-		if(finalJoc(valorRestant)&&valorRestant>0) {
-			System.out.println("Els pasos son: "+printaPasos(pasos));
-			return;
-		}
-		//S'ha de tindre en compte que per pujar es necesita tambe decrementar les files i columnes
-		//pero poder recorrer tot el laberint i tindre totes les opcions possibles
-		for(int i = posAuxF; i<files; i++)
-			for(int j = posAuxC; j<columnes && nivell>=0; j++) {
-				if(!valors[i][j].contains("N")||valorRestant<=0) {
-				pasos[nivell] = valors[i][j];
-				posF=i;
-				posC=j;
-				valorRestant=operacio(valorRestant);
-				funcioBackT(valorRestant, pasos, --nivell);
-				}else {
-				++nivell;
-				pasos[nivell] = "";}
-			}
-	}
+	public boolean sresoldreBack(int valors[][], int i, int j, int sol[][])
+    {
+        // si x, y es el final == true
+        if (x == N - 1 && y == N - 1) {
+            sol[x][y] = 1;
+            return true;
+        }
+ 
+        // comprovem si es valid
+        if (usable(i, j) == true) {
+            sol[i][j] = 1;
+ 
+            //ens movem endavant en direcció de les X
+            if (sresoldreBack(valors, i + 1, j, sol))
+                return true;
+ 
+            //si al moure en la direcció de les x no funciona ens movem en direccio de les y
+            if (sresoldreBack(valors, i, j + 1, sol))
+                return true;
+ 
+            //en el cas de que cap de les solucions funcioni apliquem el backtracking i desmarquem la posició
+            sol[i][j] = 0;
+            return false;
+        }
+ 
+        return false;
+    }
 	public String printaPasos (String[] pasos ) {	
 		String resultat = "";	
 		for (int i = pasos.length - 1; i > 0; i--) resultat += pasos[i] + " ";	

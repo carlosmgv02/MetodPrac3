@@ -20,7 +20,7 @@ public class AplicacioAvid {
                 valorAct=l.millorCasAvid(valorAct);
                 casellaF=l.actualitzacioF();
                 casellaC=l.actualitzacioC();
-                System.out.println("fila: "+casellaF+"columna:"+casellaC);
+                System.out.println("fila: "+casellaF+" columna:"+casellaC);
                 System.out.println("punts que queden: "+valorAct);
             fi=l.finalJoc(valorAct);
         }
