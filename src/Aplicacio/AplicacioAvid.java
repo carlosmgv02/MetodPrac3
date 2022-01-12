@@ -8,7 +8,7 @@ import Dades.LaberintMetodes;
 public class AplicacioAvid {
     
     static LaberintMetodes l;
-    static int  casellaF, casellaC, mov, valorAct=9;
+    static int  casellaF=3, casellaC=0, mov, valorAct=9;
     static String casella=new String();
     static boolean fi=false, movV=true;
     static Scanner teclat = new Scanner(System.in);
@@ -17,12 +17,12 @@ public class AplicacioAvid {
         l=carregaLaberint("Laberint.txt");
         System.out.println(l);
         while(!fi) {
-                valorAct=l.millorCasAvid(valorAct);
+                valorAct=l.comprobar(valorAct, casellaF, casellaC);
                 casellaF=l.actualitzacioF();
                 casellaC=l.actualitzacioC();
-                System.out.println("fila: "+casellaF+" columna:"+casellaC);
+                System.out.println("Valor= "+l.getValue(casellaF, casellaC)+" fila: "+casellaF+" columna:"+casellaC);
                 System.out.println("punts que queden: "+valorAct);
-            fi=l.finalJoc(valorAct);
+            fi=l.finalJoc(valorAct, casellaF, casellaC);
         }
         if(casellaF==1&&casellaC==6)
             System.out.println("has guanyat");

@@ -14,10 +14,6 @@ public class LaberintMetodes {
         this.casellaAC=casellaAC;
         posF=casellaSF;
         posC=casellaSC;
-        posActF=casellaSF;
-        posActC=casellaSC;
-        posAuxF=posF;
-        posAuxC=posC;
         valorsAux=new String[files][columnes];
 
     }
@@ -42,75 +38,6 @@ public class LaberintMetodes {
             }
     }
 
-    public String moviment(int direccio) {
-        //dreta 1, esquerra 2, adal 3, abaix 4
-        switch(direccio) {
-        case 0:
-            posAuxC=posC;
-            posC++;
-            break;
-        case 1:
-            posAuxC=posC;
-            posC--;
-            break;
-        case 2:
-            posAuxF=posF;
-            posF--;
-            break;
-        case 3:
-            posAuxF=posF;
-            posF++;
-        
-        }
-        if(posF>=0 && posC>=0 && posF<files && posC<columnes)
-        return valors[posF][posC];
-        else             
-            return "N";
-    }
-    
-    public void restaurarPos (int direccio) {
-        switch(direccio) {
-        case 0:
-            posAuxC=posC;
-            posC--;
-            break;
-        case 1:
-            posAuxC=posC;
-            posC++;
-            break;
-        case 2:
-            posAuxF=posF;
-            posF++;
-            break;
-        case 3:
-            posAuxF=posF;
-            posF--;
-        
-        }
-    }
-
-
-    public boolean movValid() {
-        if (posF < 0) {
-            posF++;
-            return false;
-        } else if (posC < 0) {
-            posC++;
-            return false;
-        } else if (posF >= files) {
-            posF--;
-            return false;
-        } else if (posC >= columnes) {
-            posC--;
-            return false;
-        } else if (valors[posF][posC].contains("N")) {
-            posF = posAuxF;
-            posC = posAuxC;
-            return false;
-        }
-        return true;
-
-    }
     public int actualitzacioF () {
         return posF;
     }
@@ -143,50 +70,17 @@ public class LaberintMetodes {
                 }
         return valorActual;
     }
+
     
-    public int millorCasAvid (int valorActual) {
-        int mov=0, Faux=0, Caux=0, valorAux=0, valorAux2=0;
-        String oper;
-        boolean movValid=true;
-        while(mov<4) {
-            oper=moviment(mov);
-            movValid=movValid();
-            if(valorsAux[posF][posC].contains("N")&&mov!=0) {
-            	restaurarPos(mov);
-            }
-            if(movValid&&!valorsAux[posF][posC].contains("N")) {
-            	valorsAux[3][0]="N";
-                valorAux=operacio(valorActual);
-                if(mov==0) {
-                    valorAux2=valorAux;
-                    Faux=posF;
-                    Caux=posC;
-                }else if(valorAux2<valorAux) {
-                    valorAux2=valorAux;
-                    Faux=posF;
-                    Caux=posC;
-                }
-                restaurarPos(mov);
-            }
-            mov++;
-        }
-        posF=Faux;
-        posC=Caux;
-        posActF=Faux;
-        posActC=Caux;
-        valorsAux[posActF][posActC]="N";
-        return valorAux2;
-    }
-    
-    public boolean finalJoc(int valorActual) {
-        if(valorActual<=0 || (posF==casellaAF && posC==casellaAC) )
+    public boolean finalJoc(int valorActual, int i, int j) {
+        if(valorActual<=0 || (i==casellaAF && j==casellaAC) )
             return true;
         else
             return false;
     }
-    public void comprobar(int valorRestant){
+    public int comprobar(int valorRestant, int casellaF, int casellaC){
         //cori: 0=norte, 1=sur, 2=oeste, 3=este
-       	int moves=4,i=0,j=0, max=0;
+       	int moves=4,i=casellaF,j=casellaC, max=0;
        	int cori=0;
   		int mov=0;
   		int valorRestantAux;
@@ -194,6 +88,7 @@ public class LaberintMetodes {
   		while(mov<moves){
               switch(mov){
                   case 0:
+                  if(i>0)
                   if(usable(i-1,j)){
                 	valorRestantAux=valorRestant;
                 	max=operacio(valorRestantAux, i-1, j);
@@ -202,12 +97,11 @@ public class LaberintMetodes {
                   	cori=0;
                   }
                   	
-                 
                   break;
                   case 1:
                 	  valorRestantAux=valorRestant;
+                	  if(i<files-1)
                   if(usable(i+1,j)&&operacio(valorRestantAux, i+1, j)>=max){
-                	 
                   	  max=operacio(valorRestantAux, i+1, j);
                       //max=valors[i][j]+valors[i-1][j];
                       cori=1;
@@ -215,6 +109,7 @@ public class LaberintMetodes {
                   break;
                   case 2:
                 	  valorRestantAux=valorRestant;
+                	  if(j>0)
                   if(usable(i,j-1)&&operacio(valorRestantAux, i, j-1)>=max){
                 	
                   	  max=operacio(valorRestantAux, i, j-1);
@@ -224,6 +119,7 @@ public class LaberintMetodes {
                   break;
                   case 3:
                 	  valorRestantAux=valorRestant;
+                if(j<columnes-1)
                   if(usable(i,j+1)&&operacio(valorRestantAux, i, j+1)>=max){
                 	  
                   	  max=operacio(valorRestantAux, i, j+1);
@@ -235,36 +131,35 @@ public class LaberintMetodes {
               
               mov++;
           }
+          valorsAux[i][j]="NA";
           switch(cori){
              case 0:
-             i--;
-             posF=i;
+             posF=i-1;
              break;
              case 1:
-             i++;
-             posF=i;
+             posF=i+1;
              break;
              case 2:
-             j--;
-             posC=j;
+             
+             posC=j-1;
              break;
              case 3:
-             j++;
-             posC=j;
+             
+             posC=j+1;
              break;
           }
        	
-            
+            return max;
         
     }
     public boolean usable(int i,int j){
-        if(!valors[i][j].equalsIgnoreCase("NA"))
+        if(!valorsAux[i][j].equalsIgnoreCase("NA"))
         	return true;
         
         return false;
     }
 		
-	public boolean sresoldreBack(int valors[][], int i, int j, int sol[][])
+	/*public boolean sresoldreBack(int valors[][], int i, int j, int sol[][])
     {
         // si x, y es el final == true
         if (x == N - 1 && y == N - 1) {
@@ -290,6 +185,9 @@ public class LaberintMetodes {
         }
  
         return false;
+    }*/
+    public String getValue(int i,int j){
+        return valors[i][j];
     }
 	public String printaPasos (String[] pasos ) {	
 		String resultat = "";	
