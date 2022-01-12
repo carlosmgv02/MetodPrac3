@@ -8,14 +8,14 @@ import Dades.LaberintMetodes;
 public class AplicacioAvid {
     
     static LaberintMetodes l;
-    static int  casellaF=3, casellaC=0, mov, valorAct=9;
-    static String casella=new String();
-    static boolean fi=false, movV=true;
-    static Scanner teclat = new Scanner(System.in);
+    static int  casellaF, casellaC, valorAct, casellaFiF, casellaFiC;
+  
+    static boolean fi=false;
     
     public static void main(String[] args) throws FileNotFoundException {
-        l=carregaLaberint("Laberint.txt");
+        l=carregaLaberint("Laberint2.txt");
         System.out.println(l);
+        valorAct=Integer.parseInt(l.getValue(casellaF, casellaC));
         while(!fi) {
                 valorAct=l.comprobar(valorAct, casellaF, casellaC);
                 casellaF=l.actualitzacioF();
@@ -24,7 +24,7 @@ public class AplicacioAvid {
                 System.out.println("punts que queden: "+valorAct);
             fi=l.finalJoc(valorAct, casellaF, casellaC);
         }
-        if(casellaF==1&&casellaC==6)
+        if(casellaF==casellaFiF&&casellaC==casellaFiC)
             System.out.println("has guanyat");
         else
             System.out.println("has perdut");
@@ -48,10 +48,13 @@ public class AplicacioAvid {
             files=trossejar.nextInt();
             columnes=trossejar.nextInt();
             casellaAF=trossejar.nextInt();
+            casellaF=casellaAF;
             casellaAC=trossejar.nextInt();
+            casellaC=casellaAC;
             casellaSF=trossejar.nextInt();
+            casellaFiF=casellaSF;
             casellaSC=trossejar.nextInt();
-            
+            casellaFiC=casellaSC;
             
             int f=0;
             valors = new String [files][columnes];
