@@ -152,40 +152,40 @@ public class LaberintMetodes {
             return max;
         
     }
-    public boolean usable(int i,int j){
+    
+    private boolean pasoBackT (int i,int j) {
+    	contador++;
+    	if(valors[i][j]== /*falta posición de salida que no se donde la guardamos*/) { //si la posicion en que estamos es la salida acabamos el bucle
+    		return true;
+    	}
+    	if(valors[i][j].equalsIgnoreCase("NA")) {
+    		return false;
+    	}
+    	boolean resultado;
+    	resultado=pasoBackT(i, j+1);
+    	if (resultado) return true;
+    	resultado=pasoBackT(i-1, j);		//nos movemos hacia las 4 direcciones
+    	if (resultado) return true;			// y comparamos el resultado con la salida,
+    	resultado=pasoBackT(i, j-1);		// si la casilla en que estamos es la salia devolvemos true
+    	if (resultado) return true;			// sino retornamos falso
+    	resultado=pasoBackT(i+1, j);
+    	if (resultado) return true;
+    	
+    	return false;
+    }
+    public void resuelveBackT (int i, int j) {
+    	if(pasoBackT(i, j)) {
+    		valors[i][j] = /*auí faltaria poner las coordenadas de la entrada*/
+    	}
+    }
+    
+    private boolean usable(int i,int j){
         if(!valorsAux[i][j].equalsIgnoreCase("NA"))
         	return true;
         
         return false;
     }
 		
-	/*public boolean sresoldreBack(int valors[][], int i, int j, int sol[][])
-    {
-        // si x, y es el final == true
-        if (x == N - 1 && y == N - 1) {
-            sol[x][y] = 1;
-            return true;
-        }
- 
-        // comprovem si es valid
-        if (usable(i, j) == true) {
-            sol[i][j] = 1;
- 
-            //ens movem endavant en direcció de les X
-            if (sresoldreBack(valors, i + 1, j, sol))
-                return true;
- 
-            //si al moure en la direcció de les x no funciona ens movem en direccio de les y
-            if (sresoldreBack(valors, i, j + 1, sol))
-                return true;
- 
-            //en el cas de que cap de les solucions funcioni apliquem el backtracking i desmarquem la posició
-            sol[i][j] = 0;
-            return false;
-        }
- 
-        return false;
-    }*/
     public String getValue(int i,int j){
         return valors[i][j];
     }

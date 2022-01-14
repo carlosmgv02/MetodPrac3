@@ -17,11 +17,19 @@ public class AplicacioBack {
 	public static void main(String[] args) throws FileNotFoundException {
 		 l=carregaLaberint("Laberint.txt");
 	     System.out.println(l);
-	     int casellesPos = 24;//24 caselles amb operacions
+	     int casellesPos = 24;		//24 caselles amb operacions
 	     String[] pasos = new String[casellesPos+1];
 	     l.funcioBackT(valorAct, pasos, casellesPos);
 	     print=l.printaPasos(pasos);
 	     System.out.println(print);
+	     
+	     while(!fi) {
+	    	 
+	     }
+	     if(casellaF==casellaFiF&&casellaC==casellaFiC)
+	            System.out.println("has guanyat");
+	        else
+	            System.out.println("has perdut");
 	}
 	
 	
