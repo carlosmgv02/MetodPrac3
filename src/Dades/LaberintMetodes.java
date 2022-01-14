@@ -3,6 +3,7 @@ package Dades;
 public class LaberintMetodes {
     int files, columnes, casellaSF, casellaSC, casellaAF, casellaAC, posF, posC, posAuxF, posAuxC, posActF, posActC;
     String[][] valors = null, valorsAux;
+    int contador;
     
     public LaberintMetodes (int files, int columnes, int casellaSF, int casellaSC, int casellaAF, int casellaAC) {
         valors=new String[files][columnes];
@@ -153,36 +154,50 @@ public class LaberintMetodes {
         
     }
     
-    private boolean pasoBackT (int i,int j) {
+    private boolean pasoBackT (int valorActual, int i,int j) {
     	contador++;
-    	if(valors[i][j]== /*falta posición de salida que no se donde la guardamos*/) { //si la posicion en que estamos es la salida acabamos el bucle
+    	if(valorsAux[i][j]== valors[casellaAF][casellaAC]) { //si la posicion en que estamos es la salida acabamos el bucle
     		return true;
     	}
-    	if(valors[i][j].equalsIgnoreCase("NA")) {
+    	if(valorsAux[i][j].equalsIgnoreCase("NA")||valorActual<=0) {
     		return false;
     	}
-    	boolean resultado;
-    	resultado=pasoBackT(i, j+1);
-    	if (resultado) return true;
-    	resultado=pasoBackT(i-1, j);		//nos movemos hacia las 4 direcciones
-    	if (resultado) return true;			// y comparamos el resultado con la salida,
-    	resultado=pasoBackT(i, j-1);		// si la casilla en que estamos es la salia devolvemos true
-    	if (resultado) return true;			// sino retornamos falso
-    	resultado=pasoBackT(i+1, j);
-    	if (resultado) return true;
     	
+    	valorsAux[i][j]="NA";//marcamos la posición por la que ya hemos pasado para no volver a mirarla
+    	boolean resultado;
+    	
+    	if(i>=0&&j>=0&&i<files-1&&j<columnes-1) {
+    		
+    	valorActual=operacio(valorActual, i, j+1);
+    	System.out.println(valors[i][j]);
+    	resultado=pasoBackT(valorActual, i, j+1);
+    	if (resultado&&valorActual>0) return true;
+    	
+    	valorActual=operacio(valorActual, i-1, j);
+    	resultado=pasoBackT(valorActual, i-1, j);		//nos movemos hacia las 4 direcciones
+    	if (resultado&&valorActual>0) return true;			// y comparamos el resultado con la salida,
+    	
+    	valorActual=operacio(valorActual, i, j-1);
+    	resultado=pasoBackT(valorActual, i, j-1);		// si la casilla en que estamos es la salia devolvemos true
+    	if (resultado&&valorActual>0) return true;			// sino retornamos falso
+    	
+    	valorActual=operacio(valorActual, i+1, j);
+    	resultado=pasoBackT(valorActual, i+1, j);
+    	if (resultado&&valorActual>0) return true;
+    }
     	return false;
     }
     public void resuelveBackT (int i, int j) {
-    	if(pasoBackT(i, j)) {
-    		valors[i][j] = /*auí faltaria poner las coordenadas de la entrada*/
+    	if(pasoBackT(9,i, j)) {
+    		valors[i][j] = valors[casellaSF][casellaSC]; /*aquí faltaria poner las coordenadas de la entrada*/
+    		
     	}
     }
     
     private boolean usable(int i,int j){
         if(!valorsAux[i][j].equalsIgnoreCase("NA"))
         	return true;
-        
+   
         return false;
     }
 		
