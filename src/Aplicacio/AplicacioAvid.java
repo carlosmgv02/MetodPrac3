@@ -13,7 +13,7 @@ public class AplicacioAvid {
     static boolean fi=false;
     
     public static void main(String[] args) throws FileNotFoundException {
-        l=carregaLaberint("Laberint2.txt");
+        l=carregaLaberint("Laberint.txt");
         System.out.println(l);
         valorAct=Integer.parseInt(l.getValue(casellaF, casellaC));
         while(!fi) {

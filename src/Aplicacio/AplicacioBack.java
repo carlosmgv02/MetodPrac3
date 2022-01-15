@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import Dades.LaberintMetodes;
+import Dades.*;
 
 public class AplicacioBack {
 
 	 static LaberintMetodes l;
-	 static int  casellaF, casellaC, valorAct=9;
+	 static int  casellaF, casellaC, valorAct=9, nivell=35;
 	 static boolean fi=false;
 	 static String print;
 	
@@ -19,7 +19,7 @@ public class AplicacioBack {
 	     System.out.println(l);
 	    // int casellesPos = 24;		//24 caselles amb operacions
 	     //String[] pasos = new String[casellesPos+1];
-	     l.resuelveBackT(casellaF, casellaC);
+	   l.pasoBackT(nivell, valorAct, casellaF, casellaC);
 	    // print=l.printaPasos(pasos);
 	     //System.out.println(print);
 	}
