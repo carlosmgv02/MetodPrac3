@@ -64,22 +64,22 @@ public class LaberintMetodes {
         if(valors[i][j].contains("+")) {
             num=valors[i][j].replace("+", "");
             operand=Integer.parseInt(num);
-            valorActual=valorActual+operand;
+            valorActual=valorActual+operand;		//sumem
         }else
         if(valors[i][j].contains("-")) {
             num=valors[i][j].replace("-", "");
             operand=Integer.parseInt(num);
-            valorActual=valorActual-operand;
+            valorActual=valorActual-operand;			//restem
         }else
             if(valors[i][j].contains("*")) {
                 num=valors[i][j].replace("*", "");
                 operand=Integer.parseInt(num);
-                valorActual=valorActual*operand;
+                valorActual=valorActual*operand;		//multipliquem
             }else
                 if(valors[i][j].contains("/")) {
                     num=valors[i][j].replace("/", "");
                     operand=Integer.parseInt(num);
-                    valorActual=valorActual/operand;
+                    valorActual=valorActual/operand;		//dividim
                 }
         return valorActual;
     }
@@ -144,7 +144,7 @@ public class LaberintMetodes {
               
               mov++;
           }
-          valorsAux[i][j]="NA";
+          valorsAux[i][j]="NA";		//trobem paret solida
           switch(cori){
              case 0:
              posF=i-1;
@@ -166,9 +166,11 @@ public class LaberintMetodes {
         
     }
     
-    public boolean pasoBackT (int contador, int valorActual, int i,int j) {
+    public boolean pasoBackT ( int valorActual, int i,int j) {
     	//contador++;
     	if(valorsAux[i][j]== valors[casellaAF][casellaAC]) { //si la posicion en que estamos es la salida acabamos el bucle
+    		System.out.println("Solucio trobada");
+    		
     		return true;
     	}
     	if(valorsAux[i][j].equalsIgnoreCase("NA")||valorActual<=0) {
@@ -178,63 +180,68 @@ public class LaberintMetodes {
     	//valorsAux[i][j]="P";//marcamos la posición por la que ya hemos pasado para no volver a mirarla
     	boolean resultado;
     	
-    	if(i>=0&&j>=0&&i<files-1&&j<columnes-1) {
-    		
-    	if(!valorsAux[i][j+1].equalsIgnoreCase("P")) {
+    	
+    	
+    	if(j<columnes-1)
+    	if(!valorsAux[i][j+1].equalsIgnoreCase("P")) {	//ignorem posicions visitades
+    	System.out.println("Dreta"+valors[i][j]);
     	valorActual=operacio(valorActual, i, j+1);
-    	System.out.println(valors[i][j]);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
-    	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i, j+1);
-    	if (resultado&&valorActual>0) return true;
+    	valorsAux[i][j]="P";						//marquem la casella com a visitada
+    	//System.out.println(printaAux());
+    	resultado=pasoBackT( valorActual, i, j+1);
+    	if (resultado&&valorActual>0) 
+    		p.printaPila();
     	}
-    	
+    	if(i>0)
     	if(!valorsAux[i-1][j].equalsIgnoreCase("P")) {
+    	System.out.println("Amunt"+valors[i][j]);
     	valorActual=operacio(valorActual, i-1, j);
-    	System.out.println("2:"+valors[i][j]);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
     	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i-1, j);		//nos movemos hacia las 4 direcciones
-    	if (resultado&&valorActual>0) return true;			// y comparamos el resultado con la salida,
+    	//System.out.println(printaAux());
+    	resultado=pasoBackT( valorActual, i-1, j);		//nos movemos hacia las 4 direcciones
+    	if (resultado&&valorActual>0)
+    		p.printaPila();// y comparamos el resultado con la salida,
     	}
     	
+    	if(j>0)
     	if(!valorsAux[i][j-1].equalsIgnoreCase("P")) {
+    	System.out.println("Esquerra"+valors[i][j]);
     	valorActual=operacio(valorActual, i, j-1);
-    	System.out.println("3:"+valors[i][j]);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
     	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i, j-1);		// si la casilla en que estamos es la salia devolvemos true
-    	if (resultado&&valorActual>0) return true;			// sino retornamos falso
+    	//System.out.println(printaAux());
+    	resultado=pasoBackT( valorActual, i, j-1);		// si la casilla en que estamos es la salia devolvemos true
+    	if (resultado&&valorActual>0)
+    		p.printaPila();// sino retornamos falso
     	}
     	
+    	if(i<files-1)
     	if(!valorsAux[i+1][j].equalsIgnoreCase("P")) {
+    	System.out.println("Avall"+valors[i][j]);
     	valorActual=operacio(valorActual, i+1, j);
-    	System.out.println("4:"+valors[i][j]);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
     	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i+1, j);
-    	if (resultado&&valorActual>0) return true;
+    	//System.out.println(printaAux());
+    	resultado=pasoBackT(valorActual, i+1, j);
+    	if (resultado&&valorActual>0)
+    		p.printaPila();
     	}
-    }
+   
+    	
+    	
     	p.desapilaValor();
+    	System.out.println("Fem backtraking");
+    	String valorLab=p.getV();
     	i=p.getF();
     	j=p.getC();
-    	++contador;
+    	valorsAux[i][j]=valorLab;
     	return false;
     }
-   /* public void resuelveBackT (int contador, int i, int j) {
-    	if(pasoBackT(contador, 9,i, j)) {
-    		valors[i][j] = valors[casellaSF][casellaSC]; aquí faltaria poner las coordenadas de la entrada
-    		
-    	}
-    }*/
-    
+
     private boolean usable(int i,int j){
-        if(!valorsAux[i][j].equalsIgnoreCase("NA"))
+        if(!valorsAux[i][j].equalsIgnoreCase("NA"))		//comprovem que la casella no és una paret
         	return true;
    
         return false;
