@@ -4,6 +4,7 @@ public class LaberintMetodes {
     int files, columnes, casellaSF, casellaSC, casellaAF, casellaAC, posF, posC, posAuxF, posAuxC, posActF, posActC;
     String[][] valors = null, valorsAux;
     Pila p=new Pila(35);
+    Paso pas=new Paso(0,0,"");
     
     public LaberintMetodes (int files, int columnes, int casellaSF, int casellaSC, int casellaAF, int casellaAC) {
         valors=new String[files][columnes];
@@ -169,8 +170,8 @@ public class LaberintMetodes {
     public boolean pasoBackT ( int valorActual, int i,int j) {
     	//contador++;
     	if(valorsAux[i][j]== valors[casellaAF][casellaAC]) { //si la posicion en que estamos es la salida acabamos el bucle
-    		System.out.println("Solucio trobada");
-    		
+    		System.out.println("Solucio trobada:");
+    		p.printaPila();
     		return true;
     	}
     	if(valorsAux[i][j].equalsIgnoreCase("NA")||valorActual<=0) {
@@ -183,55 +184,52 @@ public class LaberintMetodes {
     	
     	
     	if(j<columnes-1)
-    	if(!valorsAux[i][j+1].equalsIgnoreCase("P")) {	//ignorem posicions visitades
+    	if(!valorsAux[i][j+1].equalsIgnoreCase("P")&&pas.getFila()!=i&&pas.getCol()!=j+1) {	//ignorem posicions visitades
     	System.out.println("Dreta"+valors[i][j]);
     	valorActual=operacio(valorActual, i, j+1);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
     	valorsAux[i][j]="P";						//marquem la casella com a visitada
-    	//System.out.println(printaAux());
+    	System.out.println(printaAux());
     	resultado=pasoBackT( valorActual, i, j+1);
-    	if (resultado&&valorActual>0) 
-    		p.printaPila();
+    	 
+    		
     	}
     	if(i>0)
-    	if(!valorsAux[i-1][j].equalsIgnoreCase("P")) {
+    	if(!valorsAux[i-1][j].equalsIgnoreCase("P")&&pas.getFila()!=i-1&&pas.getCol()!=j) {
     	System.out.println("Amunt"+valors[i][j]);
     	valorActual=operacio(valorActual, i-1, j);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
     	valorsAux[i][j]="P";
-    	//System.out.println(printaAux());
+    	System.out.println(printaAux());
     	resultado=pasoBackT( valorActual, i-1, j);		//nos movemos hacia las 4 direcciones
-    	if (resultado&&valorActual>0)
-    		p.printaPila();// y comparamos el resultado con la salida,
+    	
     	}
     	
     	if(j>0)
-    	if(!valorsAux[i][j-1].equalsIgnoreCase("P")) {
+    	if(!valorsAux[i][j-1].equalsIgnoreCase("P")&&pas.getFila()!=i&&pas.getCol()!=j-1) {
     	System.out.println("Esquerra"+valors[i][j]);
     	valorActual=operacio(valorActual, i, j-1);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
     	valorsAux[i][j]="P";
-    	//System.out.println(printaAux());
+    	System.out.println(printaAux());
     	resultado=pasoBackT( valorActual, i, j-1);		// si la casilla en que estamos es la salia devolvemos true
-    	if (resultado&&valorActual>0)
-    		p.printaPila();// sino retornamos falso
+    	
     	}
     	
     	if(i<files-1)
-    	if(!valorsAux[i+1][j].equalsIgnoreCase("P")) {
+    	if(!valorsAux[i+1][j].equalsIgnoreCase("P")&&pas.getFila()!=i+1&&pas.getCol()!=j) {
     	System.out.println("Avall"+valors[i][j]);
     	valorActual=operacio(valorActual, i+1, j);
     	p.apilaValor(new Paso(i,j,valors[i][j]));
     	valorsAux[i][j]="P";
-    	//System.out.println(printaAux());
+    	System.out.println(printaAux());
     	resultado=pasoBackT(valorActual, i+1, j);
-    	if (resultado&&valorActual>0)
-    		p.printaPila();
+    
     	}
    
     	
     	
-    	p.desapilaValor();
+    	pas=p.desapilaValor();
     	System.out.println("Fem backtraking");
     	String valorLab=p.getV();
     	i=p.getF();
@@ -247,10 +245,10 @@ public class LaberintMetodes {
         return false;
     }
 		
-    public String getValue(int i,int j){
+    public String getValue(int i,int j){		//comprovem el valor de la casella
         return valors[i][j];
     }
-	public String printaPasos (String[] pasos ) {	
+	public String printaPasos (String[] pasos ) {				//imprimim les consultes que hem fet
 		String resultat = "";	
 		for (int i = pasos.length - 1; i > 0; i--) resultat += pasos[i] + " ";	
 		return resultat;	
