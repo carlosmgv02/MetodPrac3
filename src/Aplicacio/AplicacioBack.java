@@ -19,7 +19,8 @@ public class AplicacioBack {
 	     System.out.println(l);
 	    // int casellesPos = 24;		//24 caselles amb operacions
 	     //String[] pasos = new String[casellesPos+1];
-	   l.pasoBackT(valorAct, casellaF, casellaC);
+	   //l.pasoBackT(valorAct, casellaF, casellaC);
+	   l.solveMaze();
 	    // print=l.printaPasos(pasos);
 	     //System.out.println(print);
 	}

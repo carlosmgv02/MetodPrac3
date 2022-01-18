@@ -5,9 +5,13 @@ public class LaberintMetodes {
     String[][] valors = null, valorsAux;
     Pila p=new Pila(35);
     Paso pas=new Paso(0,0,"");
+    boolean[][]wasHere;
+    int puntos=0;
     
     public LaberintMetodes (int files, int columnes, int casellaSF, int casellaSC, int casellaAF, int casellaAC) {
         valors=new String[files][columnes];
+        wasHere=new boolean[files][columnes];
+        fillWasHere();
         this.files=files;
         this.columnes=columnes;
         this.casellaSF=casellaSF;
@@ -166,7 +170,73 @@ public class LaberintMetodes {
             return max;
         
     }
+    public void solveMaze() {
+    	for (int row=0;row<files;row++)
+    		for(int col=0;col<columnes;col++) {
+    			wasHere[row][col]=false;
+    			//correctPath[row][col]=false;
+    		}
+    	boolean b= recursiveSolve(casellaSF, casellaSC,0);
+    }
+    public void fillWasHere(){
+        for(int i=0;i<files;i++){
+            for(int j=0;j<columnes;j++){
+                if(!usable(i,j))
+                	wasHere[i][j]=true;
+            }
+        }
+    }
     
+    public boolean recursiveSolve(int x, int y,int valorAct) {
+    	if (x==casellaAF && y==casellaAC) return true;
+    	
+    	if (x>=0&&y>=0&&x<files&&y<columnes)
+    	if(valorAct<0 || wasHere[x][y]) return false;
+    	
+    	if (x>=0&&y>=0&&x<files&&y<columnes)
+    	wasHere[x][y]=true;
+    	
+    	if(x!=0&&usable(x-1,y))
+                System.out.println("Valor: "+valors[x][y]+", fila= "+(x)+", col= "+y);
+    			valorAct=operacio(valorAct, x,y);
+                System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x-1, y, valorAct)) {
+    			//correctPath[x][y] = true;
+    			
+    			return true;
+    		}
+    	if(x!= files-1&&usable(x+1,y))
+                System.out.println("Valor: "+valors[x][y]+", fila= "+(x)+", col= "+y);
+    			valorAct=operacio(valorAct, x,y);
+    			System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x+1, y, valorAct)) {
+    			//correctPath[x][y]=true;
+    			
+    			return true;
+    		}
+    	if(y!=0&&usable(x,y-1))
+                System.out.println("Valor: "+valors[x][y]+", fila= "+x+", col= "+y);
+    			valorAct=operacio(valorAct, x,y);
+    			System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x, y-1,valorAct)) {
+    			//correctPath[x][y]=true;
+    			return true;
+    		}
+    	if(y!= columnes-1&&usable(x,y+1))
+                System.out.println("Valor: "+valors[x][y]+", fila= "+x+", col= "+y);
+    			valorAct=operacio(valorAct, x,y);
+    			System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x,y+1, valorAct)) {
+    			//correctPath[x][y]=true;
+    			return true;
+    		}
+    	return false;
+    }
+    public boolean utilizable(int i,int j){
+        if(usable(i,j)&&(i>0&&i<5)&&(j>0&&j<7))
+        	return true;
+        return false;
+    }
     public boolean pasoBackT ( int valorActual, int i,int j) {
     	//contador++;
     	if(valorsAux[i][j]== valors[casellaAF][casellaAC]) { //si la posicion en que estamos es la salida acabamos el bucle
@@ -180,8 +250,6 @@ public class LaberintMetodes {
     	
     	//valorsAux[i][j]="P";//marcamos la posición por la que ya hemos pasado para no volver a mirarla
     	boolean resultado;
-    	
-    	
     	
     	if(j<columnes-1)
     	if(!valorsAux[i][j+1].equalsIgnoreCase("P")&&pas.getFila()!=i&&pas.getCol()!=j+1) {	//ignorem posicions visitades
@@ -226,9 +294,7 @@ public class LaberintMetodes {
     	resultado=pasoBackT(valorActual, i+1, j);
     
     	}
-   
-    	
-    	
+
     	pas=p.desapilaValor();
     	System.out.println("Fem backtraking");
     	String valorLab=p.getV();
@@ -239,6 +305,7 @@ public class LaberintMetodes {
     }
 
     private boolean usable(int i,int j){
+        if (i>=0&&j>=0&&i<files&&j<columnes)
         if(!valorsAux[i][j].equalsIgnoreCase("NA"))		//comprovem que la casella no és una paret
         	return true;
    
