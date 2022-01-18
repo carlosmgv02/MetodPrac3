@@ -15,7 +15,7 @@ public class AplicacioBack {
 	 static String print;
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		 l=carregaLaberint("Laberint.txt");
+		 l=carregaLaberint("Laberint2.txt");
 	     System.out.println(l);
 	    // int casellesPos = 24;		//24 caselles amb operacions
 	     //String[] pasos = new String[casellesPos+1];
