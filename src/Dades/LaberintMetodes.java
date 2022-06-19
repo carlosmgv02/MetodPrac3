@@ -1,12 +1,17 @@
 package Dades;
 
 public class LaberintMetodes {
-    int files, columnes, casellaSF, casellaSC, casellaAF, casellaAC, posF, posC, posAuxF, posAuxC, posActF, posActC;
+    int files, columnes, casellaSF, casellaSC, casellaAF, casellaAC, posF, posC;
     String[][] valors = null, valorsAux;
-    Pila p=new Pila(35);
+    boolean[][]wasHere;
+    int puntos=0;
+    /*Pila p=new Pila(35);
+    Paso pas=new Paso(0,0,"");*/
     
     public LaberintMetodes (int files, int columnes, int casellaSF, int casellaSC, int casellaAF, int casellaAC) {
         valors=new String[files][columnes];
+        wasHere=new boolean[files][columnes];
+        fillWasHere();
         this.files=files;
         this.columnes=columnes;
         this.casellaSF=casellaSF;
@@ -31,18 +36,11 @@ public class LaberintMetodes {
         }        
             return devolver;
     }
-    public String printaAux(){
-        String devolver=new String();
-        int i=0,j=0;
-        for(i=0;i<files;i++){
-            for(j=0;j<columnes;j++){
-                devolver=devolver + " "+valorsAux[i][j];
-            }
-            devolver=devolver+"\n";
-                
-        }        
-            return devolver;
-    }
+   
+    /**
+     * We save the maze on our global variable valorsAux
+     * @param valors: read 2D String array from one of the 2 available files
+     */
     public void afegirLab (String[][] valors) {
         for(int i=0; i<files;i++)
             for(int j=0;j<columnes;j++) {
@@ -64,22 +62,22 @@ public class LaberintMetodes {
         if(valors[i][j].contains("+")) {
             num=valors[i][j].replace("+", "");
             operand=Integer.parseInt(num);
-            valorActual=valorActual+operand;
+            valorActual=valorActual+operand;		//sumem
         }else
         if(valors[i][j].contains("-")) {
             num=valors[i][j].replace("-", "");
             operand=Integer.parseInt(num);
-            valorActual=valorActual-operand;
+            valorActual=valorActual-operand;			//restem
         }else
             if(valors[i][j].contains("*")) {
                 num=valors[i][j].replace("*", "");
                 operand=Integer.parseInt(num);
-                valorActual=valorActual*operand;
+                valorActual=valorActual*operand;		//multipliquem
             }else
                 if(valors[i][j].contains("/")) {
                     num=valors[i][j].replace("/", "");
                     operand=Integer.parseInt(num);
-                    valorActual=valorActual/operand;
+                    valorActual=valorActual/operand;		//dividim
                 }
         return valorActual;
     }
@@ -144,7 +142,7 @@ public class LaberintMetodes {
               
               mov++;
           }
-          valorsAux[i][j]="NA";
+          valorsAux[i][j]="NA";		//trobem paret solida
           switch(cori){
              case 0:
              posF=i-1;
@@ -165,87 +163,177 @@ public class LaberintMetodes {
             return max;
         
     }
-    
-    public boolean pasoBackT (int contador, int valorActual, int i,int j) {
-    	//contador++;
-    	if(valorsAux[i][j]== valors[casellaAF][casellaAC]) { //si la posicion en que estamos es la salida acabamos el bucle
-    		return true;
-    	}
-    	if(valorsAux[i][j].equalsIgnoreCase("NA")||valorActual<=0) {
-    		return false;
-    	}
-    	
-    	//valorsAux[i][j]="P";//marcamos la posición por la que ya hemos pasado para no volver a mirarla
-    	boolean resultado;
-    	
-    	if(i>=0&&j>=0&&i<files-1&&j<columnes-1) {
+    public void solveMaze() {
+    	for (int row=0;row<files;row++)
+    		for(int col=0;col<columnes;col++) {
+    			wasHere[row][col]=false;
+    			//correctPath[row][col]=false;
+    		}
+    	boolean b= recursiveSolve(casellaSF, casellaSC,0);
+    	if(b) {
     		
-    	if(!valorsAux[i][j+1].equalsIgnoreCase("P")) {
-    	valorActual=operacio(valorActual, i, j+1);
-    	System.out.println(valors[i][j]);
-    	p.apilaValor(new Paso(i,j,valors[i][j]));
-    	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i, j+1);
-    	if (resultado&&valorActual>0) return true;
-    	}
-    	
-    	if(!valorsAux[i-1][j].equalsIgnoreCase("P")) {
-    	valorActual=operacio(valorActual, i-1, j);
-    	System.out.println("2:"+valors[i][j]);
-    	p.apilaValor(new Paso(i,j,valors[i][j]));
-    	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i-1, j);		//nos movemos hacia las 4 direcciones
-    	if (resultado&&valorActual>0) return true;			// y comparamos el resultado con la salida,
-    	}
-    	
-    	if(!valorsAux[i][j-1].equalsIgnoreCase("P")) {
-    	valorActual=operacio(valorActual, i, j-1);
-    	System.out.println("3:"+valors[i][j]);
-    	p.apilaValor(new Paso(i,j,valors[i][j]));
-    	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i, j-1);		// si la casilla en que estamos es la salia devolvemos true
-    	if (resultado&&valorActual>0) return true;			// sino retornamos falso
-    	}
-    	
-    	if(!valorsAux[i+1][j].equalsIgnoreCase("P")) {
-    	valorActual=operacio(valorActual, i+1, j);
-    	System.out.println("4:"+valors[i][j]);
-    	p.apilaValor(new Paso(i,j,valors[i][j]));
-    	valorsAux[i][j]="P";
-    	System.out.println(printaAux());
-    	resultado=pasoBackT(--contador, valorActual, i+1, j);
-    	if (resultado&&valorActual>0) return true;
-    	}
+    		System.out.println("Solution found");}
     }
-    	p.desapilaValor();
-    	i=p.getF();
-    	j=p.getC();
-    	++contador;
+    
+    /**
+     * Boolean 2D array used to indicate if the position has been visited or not
+     */
+    public void fillWasHere(){
+        for(int i=0;i<files;i++){
+            for(int j=0;j<columnes;j++){
+                if(!usable(i,j))
+                	wasHere[i][j]=true;
+            }
+        }
+    }
+    
+    public boolean recursiveSolve(int x, int y,int valorAct) {
+    	if (x==casellaAF && y==casellaAC){
+            System.out.println("Valor: "+valors[x][y]+", fila= "+x+", col= "+y);
+            valorAct=operacio(valorAct, x,y);
+            System.out.println("\tAct: "+valorAct);
+            return true;
+        } 
+    	
+    	if (x>=0&&y>=0&&x<files&&y<columnes)
+    	if(valorAct<0 || wasHere[x][y]) return false;
+    	
+    	if (x>=0&&y>=0&&x<files&&y<columnes) {
+    		wasHere[x][y]=true;
+    		valorAct=operacio(valorAct, x,y);	
+    	}
+    	
+    	if(x!=0&&usable(x-1,y)) {
+                System.out.println("Valor: "+valors[x][y]+", fila= "+(x)+", col= "+y);
+    			if(!wasHere[x][y]) {
+    				valorAct=operacio(valorAct, x,y);
+    				wasHere[x][y]=true;
+    			}
+                System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x-1, y, valorAct)) {
+    			
+    			
+    			return true;
+    		}}
+    	if(x!= files-1&&usable(x+1,y)) {
+                System.out.println("Valor: "+valors[x][y]+", fila= "+(x)+", col= "+y);
+                if(!wasHere[x][y]) {
+    				valorAct=operacio(valorAct, x,y);
+    				wasHere[x][y]=true;
+    			}
+    			System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x+1, y, valorAct)) {
+    			
+    			return true;
+    		}}
+    	if(y!=0&&usable(x,y-1)) {
+                System.out.println("Valor: "+valors[x][y]+", fila= "+x+", col= "+y);
+                if(!wasHere[x][y]) {
+    				valorAct=operacio(valorAct, x,y);
+    				wasHere[x][y]=true;
+    			}
+    			System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x, y-1,valorAct)) {
+    			return true;
+    		}}
+    	if(y!= columnes-1&&usable(x,y+1)) {
+    		System.out.println("Valor: "+valors[x][y]+", fila= "+x+", col= "+y);
+                if(!wasHere[x][y]) {
+    				valorAct=operacio(valorAct, x,y);
+    				wasHere[x][y]=true;
+    			}
+    			System.out.println("\tAct: "+valorAct);
+    		if(recursiveSolve(x,y+1, valorAct)) {
+    			//correctPath[x][y]=true;
+    			return true;
+    		}}
     	return false;
     }
-   /* public void resuelveBackT (int contador, int i, int j) {
-    	if(pasoBackT(contador, 9,i, j)) {
-    		valors[i][j] = valors[casellaSF][casellaSC]; aquí faltaria poner las coordenadas de la entrada
-    		
-    	}
-    }*/
-    
+
     private boolean usable(int i,int j){
-        if(!valorsAux[i][j].equalsIgnoreCase("NA"))
+        if (i>=0&&j>=0&&i<files&&j<columnes)
+        if(!valorsAux[i][j].equalsIgnoreCase("NA"))		//comprovem que la casella no és una paret
         	return true;
    
         return false;
     }
 		
-    public String getValue(int i,int j){
+    public String getValue(int i,int j){		//comprovem el valor de la casella
         return valors[i][j];
     }
-	public String printaPasos (String[] pasos ) {	
+	/*public String printaPasos (String[] pasos ) {				//imprimim les consultes que hem fet
 		String resultat = "";	
 		for (int i = pasos.length - 1; i > 0; i--) resultat += pasos[i] + " ";	
 		return resultat;	
+	}*/
+	/**
+	 * ALTERNATIVE SOLUTION NOT COMPLETELY FUNCTIONAL
+	 * SOME ERRORS MADE US LOOK FOR ANOTHER WAY OF SOLVING THE PROBLEM
+	 */
+	/*public boolean pasoBackT ( int valorActual, int i,int j) {
+	//contador++;
+	if(valorsAux[i][j]== valors[casellaAF][casellaAC]) { //si la posicion en que estamos es la salida acabamos el bucle
+		System.out.println("Solucio trobada:");
+		p.printaPila();
+		return true;
 	}
+	if(valorsAux[i][j].equalsIgnoreCase("NA")||valorActual<=0) {
+		return false;
+	}
+	
+	//valorsAux[i][j]="P";//marcamos la posición por la que ya hemos pasado para no volver a mirarla
+	boolean resultado;
+	
+	if(j<columnes-1)
+	if(!valorsAux[i][j+1].equalsIgnoreCase("P")&&pas.getFila()!=i&&pas.getCol()!=j+1) {	//ignorem posicions visitades
+	System.out.println("Dreta"+valors[i][j]);
+	valorActual=operacio(valorActual, i, j+1);
+	p.apilaValor(new Paso(i,j,valors[i][j]));
+	valorsAux[i][j]="P";						//marquem la casella com a visitada
+	System.out.println(printaAux());
+	resultado=pasoBackT( valorActual, i, j+1);
+	 
+		
+	}
+	if(i>0)
+	if(!valorsAux[i-1][j].equalsIgnoreCase("P")&&pas.getFila()!=i-1&&pas.getCol()!=j) {
+	System.out.println("Amunt"+valors[i][j]);
+	valorActual=operacio(valorActual, i-1, j);
+	p.apilaValor(new Paso(i,j,valors[i][j]));
+	valorsAux[i][j]="P";
+	System.out.println(printaAux());
+	resultado=pasoBackT( valorActual, i-1, j);		//nos movemos hacia las 4 direcciones
+	
+	}
+	
+	if(j>0)
+	if(!valorsAux[i][j-1].equalsIgnoreCase("P")&&pas.getFila()!=i&&pas.getCol()!=j-1) {
+	System.out.println("Esquerra"+valors[i][j]);
+	valorActual=operacio(valorActual, i, j-1);
+	p.apilaValor(new Paso(i,j,valors[i][j]));
+	valorsAux[i][j]="P";
+	System.out.println(printaAux());
+	resultado=pasoBackT( valorActual, i, j-1);		// si la casilla en que estamos es la salia devolvemos true
+	
+	}
+	
+	if(i<files-1)
+	if(!valorsAux[i+1][j].equalsIgnoreCase("P")&&pas.getFila()!=i+1&&pas.getCol()!=j) {
+	System.out.println("Avall"+valors[i][j]);
+	valorActual=operacio(valorActual, i+1, j);
+	p.apilaValor(new Paso(i,j,valors[i][j]));
+	valorsAux[i][j]="P";
+	System.out.println(printaAux());
+	resultado=pasoBackT(valorActual, i+1, j);
+
+	}
+
+	pas=p.desapilaValor();
+	System.out.println("Fem backtraking");
+	String valorLab=p.getV();
+	i=p.getF();
+	j=p.getC();
+	valorsAux[i][j]=valorLab;
+	return false;
+}*/
 }

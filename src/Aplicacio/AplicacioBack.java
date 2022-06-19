@@ -15,11 +15,12 @@ public class AplicacioBack {
 	 static String print;
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		 l=carregaLaberint("Laberint.txt");
+		 l=carregaLaberint("Laberint2.txt");
 	     System.out.println(l);
 	    // int casellesPos = 24;		//24 caselles amb operacions
 	     //String[] pasos = new String[casellesPos+1];
-	   l.pasoBackT(nivell, valorAct, casellaF, casellaC);
+	   //l.pasoBackT(valorAct, casellaF, casellaC);
+	   l.solveMaze();
 	    // print=l.printaPasos(pasos);
 	     //System.out.println(print);
 	}
@@ -60,7 +61,6 @@ public class AplicacioBack {
                 for(int c=0; c<columnes;c++) {
                     valors[f][c]=trossejar.next();
                 }
-                
                 f++;
             }
 
